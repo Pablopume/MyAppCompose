@@ -61,7 +61,6 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             MyApplicationComposeTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -94,8 +93,7 @@ class MainActivity : ComponentActivity() {
 
             ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             )
@@ -111,11 +109,11 @@ class MainActivity : ComponentActivity() {
                             editmode.value = isChecked
                         },
                         thumbContent = {
-                                Icon(
-                                    imageVector = Icons.Filled.Edit,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                    )
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                            )
                         }
                     )
                 }
@@ -140,7 +138,6 @@ class MainActivity : ComponentActivity() {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(vertical = 18.dp)
                         .height(50.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -159,19 +156,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     } else {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-
-
-                        ) {
-                            Text(
-                                text = selectedOption.value,
-                                style = MaterialTheme.typography.bodyLarge
-
-                            )
-                        }
+                        Text(
+                            text = selectedOption.value,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
 
 
