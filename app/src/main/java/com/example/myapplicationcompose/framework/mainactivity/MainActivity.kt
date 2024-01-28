@@ -111,21 +111,11 @@ class MainActivity : ComponentActivity() {
                             editmode.value = isChecked
                         },
                         thumbContent = {
-                            if (editmode.value) {
                                 Icon(
                                     imageVector = Icons.Filled.Edit,
                                     contentDescription = null,
                                     modifier = Modifier.size(SwitchDefaults.IconSize),
-
-
                                     )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Filled.Lock,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            }
                         }
                     )
                 }
