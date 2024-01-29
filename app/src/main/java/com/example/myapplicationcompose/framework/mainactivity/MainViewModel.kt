@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(botonDerecha = true)
                 _uiState.value = _uiState.value.copy(actor = uiState.value.actores[0])
             } else {
-                _uiState.value = _uiState.value.copy(botonDerecha = true)
+                _uiState.value = _uiState.value.copy(botonDerecha = false)
                 _uiState.value = _uiState.value.copy(actor = Actor())
             }
         }

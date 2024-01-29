@@ -8,6 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
+
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,13 +20,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -95,8 +96,8 @@ class MainActivity : ComponentActivity() {
             Column(
 
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            )
+
+                )
 
             {
                 Box(
@@ -122,14 +123,14 @@ class MainActivity : ComponentActivity() {
                         value = textState.value,
                         onValueChange = { textState.value = it },
                         label = { Text("Nombre") },
-                        modifier = Modifier.width(228.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 } else {
                     OutlinedTextField(
                         value = textState.value,
                         onValueChange = { textState.value = it },
                         label = { Text("Nombre") },
-                        modifier = Modifier.width(228.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         enabled = false
                     )
                 }
@@ -268,7 +269,7 @@ class MainActivity : ComponentActivity() {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(43.dp)
+
                     ) {
                         Text("Actualizar actor")
                     }
@@ -295,9 +296,14 @@ class MainActivity : ComponentActivity() {
                         Text("Actualizar actor")
                     }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+            }
+            Column(modifier=Modifier.align(Alignment.BottomCenter)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     IconButton(
@@ -363,7 +369,6 @@ class MainActivity : ComponentActivity() {
                 }
 
             }
-
         }
         ObservarViewModel(
             textState,
