@@ -49,10 +49,15 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(botonIzquierda = false)
-            if (uiState.value.actores.isNotEmpty()) {
+            if (uiState.value.actores.size==1) {
+                _uiState.value = _uiState.value.copy(botonDerecha = false)
+                _uiState.value = _uiState.value.copy(actor = uiState.value.actores[0])
+            }else if(uiState.value.actores.isNotEmpty()){
                 _uiState.value = _uiState.value.copy(botonDerecha = true)
                 _uiState.value = _uiState.value.copy(actor = uiState.value.actores[0])
-            } else {
+
+            }
+            else {
                 _uiState.value = _uiState.value.copy(botonDerecha = false)
                 _uiState.value = _uiState.value.copy(actor = Actor())
             }
