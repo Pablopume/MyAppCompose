@@ -2,6 +2,7 @@ package com.example.myapplicationcompose.data.sources
 
 import android.content.Context
 import androidx.room.Room
+import com.example.myapplicationcompose.data.Constantes
 
 import dagger.Module
 import dagger.Provides
@@ -29,7 +30,7 @@ object RoomModule {
         return Room.databaseBuilder(
             appContext,
             AppDataBase::class.java,
-            "app_db"
+            Constantes.APP_DB
         ).fallbackToDestructiveMigration()
             .build()
     }

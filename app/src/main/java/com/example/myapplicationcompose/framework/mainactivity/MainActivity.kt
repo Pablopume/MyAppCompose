@@ -1,6 +1,7 @@
 package com.example.myapplicationcompose.framework.mainactivity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplicationcompose.domain.Constantes
 import com.example.myapplicationcompose.domain.modelo.Actor
 import com.example.myapplicationcompose.ui.theme.MyApplicationComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,25 +59,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             MyApplicationComposeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MyScreen()
-
                 }
             }
         }
-
     }
 
 
     @Composable
     fun MyScreen() {
         val textState = remember { mutableStateOf(TextFieldValue()) }
-        val radioOptions = listOf("Masculino", "Femenino", "Otro")
+        val radioOptions = listOf(Constantes.MASCULINO, Constantes.FEMENINO, Constantes.OTRO)
         val selectedOption = remember { mutableStateOf(radioOptions[0]) }
         val checkBoxState = remember { mutableStateOf(false) }
         val sliderPosition = remember { mutableFloatStateOf(0f) }
@@ -115,22 +114,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-                if (editmode.value) {
-                    OutlinedTextField(
-                        value = textState.value,
-                        onValueChange = { textState.value = it },
-                        label = { Text("Nombre") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-                    OutlinedTextField(
-                        value = textState.value,
-                        onValueChange = { textState.value = it },
-                        label = { Text("Nombre") },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = false
-                    )
-                }
+                Nombre(editmode, textState)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -141,59 +125,21 @@ class MainActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
 
-                    if (editmode.value) {
-                        radioOptions.forEach { text ->
-                            RadioButton(
-                                selected = (text == selectedOption.value),
-                                onClick = { selectedOption.value = text }
-                            )
-                            Text(
-                                text = text,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.clickable { selectedOption.value = text }
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = selectedOption.value,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
+                    RadioButtons(editmode, radioOptions, selectedOption)
 
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Premios Óscar",
+                    text = Constantes.OSCAR,
                     fontSize = 24.sp,
                     modifier = Modifier.width(228.dp)
 
 
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                if (editmode.value) {
-                    Slider(
-                        value = sliderPosition.floatValue,
-                        onValueChange = { sliderPosition.floatValue = it },
-                        valueRange = 0f..10f,
-                        steps = 10,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(2.dp)
-                    )
-                } else {
-                    Slider(
-                        enabled = false,
-                        value = sliderPosition.floatValue,
-                        onValueChange = { sliderPosition.floatValue = it },
-                        valueRange = 0f..10f,
-                        steps = 10,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(2.dp)
-                    )
-                }
+                Slider(editmode, sliderPosition)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -203,23 +149,10 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
-                    if (editmode.value) {
-                        Checkbox(
-                            checked = checkBoxState.value,
-                            onCheckedChange = { checkBoxState.value = it }
-
-                        )
-                    } else {
-                        Checkbox(
-                            enabled = false,
-                            checked = checkBoxState.value,
-                            onCheckedChange = { checkBoxState.value = it }
-
-                        )
-                    }
+                    Checkbox(editmode, checkBoxState)
 
                     Text(
-                        text = "Está vivo",
+                        text = Constantes.vivo,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.clickable {
                             checkBoxState.value = !checkBoxState.value
@@ -228,142 +161,30 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                if (editmode.value) {
-                    OutlinedTextField(
-                        value = famousMovie.value,
-                        onValueChange = { famousMovie.value = it },
-                        label = { Text("Película famosa") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(70.dp)
-                    )
-                } else {
-                    OutlinedTextField(
-                        enabled = false,
-                        value = famousMovie.value,
-                        onValueChange = { famousMovie.value = it },
-                        label = { Text("Película famosa") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(70.dp)
-                    )
-                }
+                Pelicula(editmode, famousMovie)
                 Spacer(modifier = Modifier.height(16.dp))
-                if (editmode.value) {
-                    Button(
-                        onClick = {
-                            viewModel.handleEvent(
-                                MainEvent.UpdateActor(
-                                    Actor(
-                                        textState.value.text,
-                                        checkBoxState.value,
-                                        famousMovie.value.text,
-                                        sliderPosition.floatValue.toInt(),
-                                        selectedOption.value, viewModel.uiState.value.actor.id
-                                    )
-                                )
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-
-                    ) {
-                        Text("Actualizar actor")
-                    }
-                } else {
-                    Button(
-                        onClick = {
-                            viewModel.handleEvent(
-                                MainEvent.UpdateActor(
-                                    Actor(
-                                        textState.value.text,
-                                        checkBoxState.value,
-                                        famousMovie.value.text,
-                                        sliderPosition.floatValue.toInt(),
-                                        selectedOption.value, viewModel.uiState.value.actor.id
-                                    )
-                                )
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(43.dp),
-                        enabled = false
-                    ) {
-                        Text("Actualizar actor")
-                    }
-                }
+                UpdateButton(
+                    editmode,
+                    textState,
+                    checkBoxState,
+                    famousMovie,
+                    sliderPosition,
+                    selectedOption
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
-            Column(modifier=Modifier.align(Alignment.BottomCenter)) {
-                Row(
-                    modifier = Modifier
-
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    IconButton(
-                        onClick = { viewModel.handleEvent(MainEvent.GetAnterior) },
-                        enabled = buttonAnterior.value
-                    ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Anterior")
-                    }
-                    if (editmode.value) {
-                        IconButton(onClick = {
-                            viewModel.handleEvent(
-                                MainEvent.AddActor(
-                                    Actor(
-                                        textState.value.text,
-                                        checkBoxState.value,
-                                        famousMovie.value.text,
-                                        sliderPosition.floatValue.toInt(),
-                                        selectedOption.value
-                                    )
-                                )
-                            )
-                        }) {
-                            Icon(Icons.Default.Add, contentDescription = "Añadir")
-                        }
-                    } else {
-                        IconButton(onClick = {
-                            viewModel.handleEvent(
-                                MainEvent.AddActor(
-                                    Actor(
-                                        textState.value.text,
-                                        checkBoxState.value,
-                                        famousMovie.value.text,
-                                        sliderPosition.floatValue.toInt(),
-                                        selectedOption.value
-                                    )
-                                )
-                            )
-                        }, enabled = false) {
-                            Icon(Icons.Default.Add, contentDescription = "Añadir")
-                        }
-                    }
-
-                    if (editmode.value) {
-                        IconButton(onClick = { viewModel.handleEvent(MainEvent.DeleteActor) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Basura")
-                        }
-                    } else {
-                        IconButton(
-                            onClick = { viewModel.handleEvent(MainEvent.DeleteActor) },
-                            enabled = false
-                        ) {
-                            Icon(Icons.Default.Delete, contentDescription = "Basura")
-                        }
-                    }
-
-                    IconButton(
-                        onClick = { viewModel.handleEvent(MainEvent.GetSiguiente) },
-                        enabled = buttonSiguiente.value
-                    ) {
-
-                        Icon(Icons.Default.ArrowForward, contentDescription = "Siguiente")
-                    }
-                }
+            Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                IconButtons(
+                    buttonAnterior,
+                    editmode,
+                    textState,
+                    checkBoxState,
+                    famousMovie,
+                    sliderPosition,
+                    selectedOption,
+                    buttonSiguiente
+                )
 
             }
         }
@@ -376,6 +197,267 @@ class MainActivity : ComponentActivity() {
             buttonSiguiente,
             buttonAnterior
         )
+    }
+
+    @Composable
+    private fun IconButtons(
+        buttonAnterior: MutableState<Boolean>,
+        editmode: MutableState<Boolean>,
+        textState: MutableState<TextFieldValue>,
+        checkBoxState: MutableState<Boolean>,
+        famousMovie: MutableState<TextFieldValue>,
+        sliderPosition: MutableFloatState,
+        selectedOption: MutableState<String>,
+        buttonSiguiente: MutableState<Boolean>
+    ) {
+        Row(
+            modifier = Modifier
+
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            IconButton(
+                onClick = { viewModel.handleEvent(MainEvent.GetAnterior) },
+                enabled = buttonAnterior.value
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = Constantes.ANTERIOR)
+            }
+            if (editmode.value) {
+                IconButton(onClick = {
+                    viewModel.handleEvent(
+                        MainEvent.AddActor(
+                            Actor(
+                                textState.value.text,
+                                checkBoxState.value,
+                                famousMovie.value.text,
+                                sliderPosition.floatValue.toInt(),
+                                selectedOption.value
+                            )
+                        )
+                    )
+                }) {
+                    Icon(Icons.Default.Add, contentDescription = Constantes.ANYADIR)
+                }
+            } else {
+                IconButton(onClick = {
+                    viewModel.handleEvent(
+                        MainEvent.AddActor(
+                            Actor(
+                                textState.value.text,
+                                checkBoxState.value,
+                                famousMovie.value.text,
+                                sliderPosition.floatValue.toInt(),
+                                selectedOption.value
+                            )
+                        )
+                    )
+                }, enabled = false) {
+                    Icon(Icons.Default.Add, contentDescription = Constantes.ANYADIR)
+                }
+            }
+
+            if (editmode.value) {
+                IconButton(onClick = { viewModel.handleEvent(MainEvent.DeleteActor) }) {
+                    Icon(Icons.Default.Delete, contentDescription = Constantes.BASURA)
+                }
+            } else {
+                IconButton(
+                    onClick = { viewModel.handleEvent(MainEvent.DeleteActor) },
+                    enabled = false
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = Constantes.BASURA)
+                }
+            }
+
+            IconButton(
+                onClick = { viewModel.handleEvent(MainEvent.GetSiguiente) },
+                enabled = buttonSiguiente.value
+            ) {
+
+                Icon(Icons.Default.ArrowForward, contentDescription = Constantes.SIGUIENTE)
+            }
+        }
+    }
+
+    @Composable
+    private fun UpdateButton(
+        editmode: MutableState<Boolean>,
+        textState: MutableState<TextFieldValue>,
+        checkBoxState: MutableState<Boolean>,
+        famousMovie: MutableState<TextFieldValue>,
+        sliderPosition: MutableFloatState,
+        selectedOption: MutableState<String>
+    ) {
+        if (editmode.value) {
+            Button(
+                onClick = {
+                    viewModel.handleEvent(
+                        MainEvent.UpdateActor(
+                            Actor(
+                                textState.value.text,
+                                checkBoxState.value,
+                                famousMovie.value.text,
+                                sliderPosition.floatValue.toInt(),
+                                selectedOption.value, viewModel.uiState.value.actor.id
+                            )
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                Text(Constantes.ACTUALIZAR)
+            }
+        } else {
+            Button(
+                onClick = {
+                    viewModel.handleEvent(
+                        MainEvent.UpdateActor(
+                            Actor(
+                                textState.value.text,
+                                checkBoxState.value,
+                                famousMovie.value.text,
+                                sliderPosition.floatValue.toInt(),
+                                selectedOption.value, viewModel.uiState.value.actor.id
+                            )
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(43.dp),
+                enabled = false
+            ) {
+                Text(Constantes.ACTUALIZAR)
+            }
+        }
+    }
+
+    @Composable
+    private fun Pelicula(
+        editmode: MutableState<Boolean>,
+        famousMovie: MutableState<TextFieldValue>
+    ) {
+        if (editmode.value) {
+            OutlinedTextField(
+                value = famousMovie.value,
+                onValueChange = { famousMovie.value = it },
+                label = { Text(Constantes.PELICULAFAMOSA) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            )
+        } else {
+            OutlinedTextField(
+                enabled = false,
+                value = famousMovie.value,
+                onValueChange = { famousMovie.value = it },
+                label = { Text(Constantes.PELICULAFAMOSA) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun Checkbox(
+        editmode: MutableState<Boolean>,
+        checkBoxState: MutableState<Boolean>
+    ) {
+        if (editmode.value) {
+            Checkbox(
+                checked = checkBoxState.value,
+                onCheckedChange = { checkBoxState.value = it }
+
+            )
+        } else {
+            Checkbox(
+                enabled = false,
+                checked = checkBoxState.value,
+                onCheckedChange = { checkBoxState.value = it }
+
+            )
+        }
+    }
+
+    @Composable
+    private fun Slider(
+        editmode: MutableState<Boolean>,
+        sliderPosition: MutableFloatState
+    ) {
+        if (editmode.value) {
+            Slider(
+                value = sliderPosition.floatValue,
+                onValueChange = { sliderPosition.floatValue = it },
+                valueRange = 0f..10f,
+                steps = 10,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+            )
+        } else {
+            Slider(
+                enabled = false,
+                value = sliderPosition.floatValue,
+                onValueChange = { sliderPosition.floatValue = it },
+                valueRange = 0f..10f,
+                steps = 10,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun RadioButtons(
+        editmode: MutableState<Boolean>,
+        radioOptions: List<String>,
+        selectedOption: MutableState<String>
+    ) {
+        if (editmode.value) {
+            radioOptions.forEach { text ->
+                RadioButton(
+                    selected = (text == selectedOption.value),
+                    onClick = { selectedOption.value = text }
+                )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.clickable { selectedOption.value = text }
+                )
+            }
+        } else {
+            Text(
+                text = selectedOption.value,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+
+    @Composable
+    private fun Nombre(
+        editmode: MutableState<Boolean>,
+        textState: MutableState<TextFieldValue>
+    ) {
+        if (editmode.value) {
+            OutlinedTextField(
+                value = textState.value,
+                onValueChange = { textState.value = it },
+                label = { Text(Constantes.NOMBRE) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        } else {
+            OutlinedTextField(
+                value = textState.value,
+                onValueChange = { textState.value = it },
+                label = { Text(Constantes.NOMBRE) },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
+            )
+        }
     }
 
     @Composable
@@ -405,7 +487,13 @@ class MainActivity : ComponentActivity() {
                 uiState.botonIzquierda.let {
                     buttonAnterior.value = it
                 }
+                uiState.error.let {
 
+                    if (it != null) {
+                        Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
+                        viewModel.handleEvent(MainEvent.ErrorVisto)
+                    }
+                }
             }
         }
     }

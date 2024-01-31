@@ -2,21 +2,17 @@ package com.example.myapplicationcompose.domain.modelo
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.myapplicationcompose.domain.Constantes
 
-@Entity(tableName = "actores")
+@Entity(tableName = Constantes.ACTOR_TABLE)
 data class Actor(
 
 
-    val nombre: String = "",
+    val nombre: String = Constantes.EMPTY,
     val vivo: Boolean = true,
-    val peliculaFamosa: String = "",
+    val peliculaFamosa: String = Constantes.EMPTY,
     val premiosOscar: Int = 0,
-    val genero: String = "",
+    val genero: String = Constantes.EMPTY,
     @PrimaryKey(autoGenerate = true)
-    val id: Int= 0
-) {
-    override fun toString(): String {
-        return "Actores(nombre='$nombre', vivo='$vivo', peliculaFamosa='$peliculaFamosa', premiosOscar=$premiosOscar, genero='$genero')"
-    }
-
-}
+    var id: Int= 0
+)
